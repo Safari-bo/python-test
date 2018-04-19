@@ -17,6 +17,5 @@ def func1(response):
 resp1 = {'status': 400, 'result': 'Test failed'}
 resp2 = {'status': 200, 'result': 'Test success'}
 
-
 print func1(resp1)
 print func1(resp2)
