@@ -58,10 +58,9 @@ def execute_cmd(ip):
     ipmi = commands.getoutput(cmd)
     if re.search('IP Address.*: ((\d{1,3}\.){3}(\d{1,3}))', ipmi):
         ent['ipmi'] = re.search('IP Address.*: ((\d{1,3}\.){3}(\d{1,3}))', ipmi).group(1)
-    cmd = "ssh root@" + ip + " 'ipmitool fru'"
+    cmd = "ssh root@" + ip + " 'dmidecode -s system-serial-number'"
     sn = commands.getoutput(cmd)
-    if re.search('Product Serial.*: (\w.*)', sn):
-        ent['sn'] = re.search('Product Serial.*: (\w.*)', sn).group(1)
+    ent['sn'] = sn.split('\r\n')[-1]
     if lock.acquire():
         ip_dict[ip] = ent
         lock.release()
@@ -86,3 +85,4 @@ with open('./ip_dict.csv', 'w') as f:
                  ip_dict[host]['mgnt'], ip_dict[host]['service'], ip_dict[host]['ceph_public'],
                  ip_dict[host]['ceph_cluster'], ip_dict[host]['sn']]
         file_writer.writerow(entry)
+
